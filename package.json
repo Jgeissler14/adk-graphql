@@ -1,0 +1,14 @@
+{
+  "name": "adk-graphql",
+  "version": "1.0.0",
+  "description": "Learning project for Google ADK and GraphQL",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo 'No tests yet' && exit 0"
+  },
+  "dependencies": {
+    "apollo-server": "^3.7.0",
+    "graphql": "^16.6.0"
+  }
+}
