@@ -44,3 +44,15 @@ Cleaned query: query {
 Cleaned query: query {
   product
 }
+Gemini response:
+query ExampleQuery { product }
+Gemini response:
+query ExampleQuery { product }
+Gemini response:
+query ExampleQuery { customer { id } }
+Gemini response:
+query ExampleQuery { customer }
+Gemini response:
+query ExampleQuery { product }
+Gemini response:
+query ExampleQuery { salesRecord }
