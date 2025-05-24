@@ -1,8 +1,14 @@
 import os
 import requests
 from google.adk.agents import Agent
+import re
 
 GRAPHQL_ENDPOINT = "http://localhost:4000/"
+
+def log_to_file(message: str):
+    with open("requests.log", "a") as f:
+        f.write(message + "\n")
+
 
 def query_graphql(query: str) -> dict:
     """Send a raw GraphQL query to the API and return the JSON response."""
@@ -28,30 +34,51 @@ def generate_graphql_query(user_input: str) -> str:
         query {
             customer
             salesRecord
+            product
         }
     """
 
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        raise RuntimeError("GEMINI_API_KEY environment variable not set")
+        raise RuntimeError("GOOGLE_API_KEY environment variable not set")
 
     prompt = (
-        "You are a helpful assistant that generates GraphQL queries. "
-        "Return only the query. The possible fields are: customer, salesRecord, product.\n"
-        f"User request: {user_input}"
+    "You are a GraphQL query generator. Respond ONLY with a valid GraphQL query. "
+    "Your response must start with 'query {' and must not include markdown, backticks, comments, or extra text.\n\n"
+    "Valid top-level fields: customer, salesRecord, product.\n\n"
+    "Example:\n"
+    "query {\n"
+    "  customer\n"
+    "  salesRecord\n"
+    "  product\n"
+    "}\n\n"
+    f"User request: {user_input}"
     )
 
     url = (
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:"
-        "generateContent?key=" + api_key
+        "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
+        f"?key={api_key}"
     )
     payload = {
         "contents": [{"parts": [{"text": prompt}]}]
     }
+
     response = requests.post(url, json=payload)
+
     response.raise_for_status()
+
     candidate = response.json()["candidates"][0]
-    return candidate["content"]["parts"][0]["text"].strip()
+
+    raw_text = candidate["content"]["parts"][0]["text"].strip()
+
+    # Remove triple backticks and optional "graphql" label
+    cleaned = re.sub(r"^```(?:graphql)?\n?", "", raw_text)
+    cleaned = re.sub(r"\n?```$", "", cleaned)
+
+    log_to_file(f"Cleaned query: {cleaned}")
+
+    return cleaned.strip()
+
 
 def find_data(user_input: str) -> dict:
     """Generate a GraphQL query from user input using an LLM and execute it."""

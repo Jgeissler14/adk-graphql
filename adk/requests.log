@@ -1,0 +1,46 @@
+Gemini response (200):
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "query {\n  product\n}\n"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "avgLogprobs": -0.00092361285351216793
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 76,
+    "candidatesTokenCount": 8,
+    "totalTokenCount": 84,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 76
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 8
+      }
+    ]
+  },
+  "modelVersion": "gemini-1.5-flash",
+  "responseId": "LRwyaPCMMaL6ld8P88ic-A4"
+}
+
+Cleaned query: query {
+  customer
+}
+Cleaned query: query {
+  customer
+}
+Cleaned query: query {
+  product
+}
