@@ -1,17 +1,24 @@
 const { ApolloServer, gql } = require('apollo-server');
-const { getSampleData } = require('./googleAdk');
 
 const typeDefs = gql`
   type Query {
-    adkData: String
+    customer: String
+    salesRecord: String
+    product: String
   }
 `;
 
 const resolvers = {
   Query: {
-    adkData: async () => {
-      return await getSampleData();
-    }
+    customer: async () => {
+      return "John Doe";
+    },
+    salesRecord: async () => {
+      return "Sales Record 12345";
+    },
+    product: async () => {
+      return "Product XYZ";
+    },
   }
 };
 
