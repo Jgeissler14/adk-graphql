@@ -1,23 +1,55 @@
 const { ApolloServer, gql } = require('apollo-server');
+const db = require('./db');
 
 const typeDefs = gql`
+  type Customer {
+    id: ID!
+    name: String!
+    email: String!
+    phone: String
+  }
+
+  type Product {
+    id: ID!
+    name: String!
+    description: String
+    price: Float!
+  }
+
+  type SalesRecord {
+    id: ID!
+    customerId: Int!
+    productId: Int!
+    quantity: Int!
+    saleDate: String!
+  }
+
   type Query {
-    customer: String
-    salesRecord: String
-    product: String
+    customers: [Customer!]!
+    products: [Product!]!
+    salesRecords: [SalesRecord!]!
   }
 `;
 
 const resolvers = {
   Query: {
-    customer: async () => {
-      return "John Doe";
+    customers: async () => {
+      const { rows } = await db.query(
+        'SELECT id, name, email, phone FROM customers'
+      );
+      return rows;
     },
-    salesRecord: async () => {
-      return "Sales Record 12345";
+    products: async () => {
+      const { rows } = await db.query(
+        'SELECT id, name, description, price FROM products'
+      );
+      return rows;
     },
-    product: async () => {
-      return "Product XYZ";
+    salesRecords: async () => {
+      const { rows } = await db.query(
+        `SELECT id, customer_id AS "customerId", product_id AS "productId", quantity, sale_date AS "saleDate" FROM sales_records`
+      );
+      return rows;
     },
   }
 };
