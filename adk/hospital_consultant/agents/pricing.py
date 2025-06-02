@@ -6,5 +6,6 @@ pricing_agent = Agent(
     model="gemini-2.0-flash",
     description="Provides information on pricing and cost estimates.",
     instruction="Provide pricing information by querying the GraphQL API.",
+
     tools=[query_graphql],
 )

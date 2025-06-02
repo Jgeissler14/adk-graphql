@@ -1,5 +1,5 @@
 """Hospital consultant multi-agent package."""
-from .agents.team_lead import run_team_lead
+from .agent import agent
 from .context import context_store
 
-__all__ = ["run_team_lead", "context_store"]
+__all__ = ["agent", "context_store"]
