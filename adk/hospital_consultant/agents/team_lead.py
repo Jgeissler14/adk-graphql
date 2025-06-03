@@ -1,31 +1,10 @@
 """Team lead agent coordinating hospital consultant specialists."""
-from google.adk.agents import Agent
 
 from .billing import billing_agent
 from .medical_report import medical_report_agent
 from .pricing import pricing_agent
 from .finance import finance_agent
 from ..context import context_store
-
-
-def _create_team_lead() -> Agent:
-    """Factory for the team lead agent."""
-    return Agent(
-        name="hospital_team_lead",
-        model="gemini-2.0-flash",
-        description="Coordinator for hospital and insurance queries.",
-        instruction=(
-            "You are the team lead for a group of specialist agents. Assess the user's request "
-            "and delegate to the appropriate agent. Use billing_agent for billing questions, "
-            "medical_report_agent for medical reports, pricing_agent for pricing, and finance_agent for finance."
-        ),
-        tools=[
-            billing_agent,
-            medical_report_agent,
-            pricing_agent,
-            finance_agent,
-        ],
-    )
 
 
 def _structured(agent_name: str, result: str) -> dict:
@@ -35,7 +14,10 @@ def _structured(agent_name: str, result: str) -> dict:
 
 def run_team_lead(company_id: str, user_id: str, user_input: str) -> dict:
     """Delegate to a specialist agent and return a structured result."""
-    team_lead = _create_team_lead()
+    # Import here to avoid circular dependency during initialization
+    from ..agent import root_agent
+
+    team_lead = root_agent
     lower = user_input.lower()
     context_store.add_user_message(company_id, user_id, f"user: {user_input}")
 
